@@ -44,3 +44,10 @@ PANEL_CONFIG = {
         "layout": "vertical",
     },
 }
+
+DEFAULT_INPUTS = {
+    "name": "",
+    "mass": 10,
+    "radius": 10,
+    # Add future inputs here
+}

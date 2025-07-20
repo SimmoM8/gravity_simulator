@@ -34,16 +34,6 @@ class UIManager:
         for panel_name in self.panels.keys():
             self.switch_page(panel_name, "main")
 
-    def debug_print_panels(self):
-        for panel_name, panel_info in self.panels.items():
-            print(f"Panel: {panel_name}")
-            for page_name, page in panel_info["pages"].items():
-                print(f"  Page: {page_name}")
-                print(f"    Elements ({len(page.elements)}):")
-                for element in page.elements:
-                    name = getattr(element, 'element_name', 'N/A')
-                    print(f"      - Element name: {name}, type: {type(element).__name__}")
-
     def switch_page(self, panel_name, page_name):
         # Get the currently active page for this panel
         current = self.current_pages.get(panel_name)
@@ -77,3 +67,4 @@ class UIManager:
 
     def get(self, name):
         return self.elements_by_name.get(name)
+ 
