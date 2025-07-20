@@ -2,29 +2,29 @@ import pygame
 import random
 import pygame_gui
 import numpy as np
+from ui_manager import UIManager
+from config import (
+    WINDOW_WIDTH, WINDOW_HEIGHT, TOOLBAR_WIDTH, LEFT_SIDEBAR_WIDTH,
+    BACKGROUND_COLOR, VECTOR_FIELD_COLOR, FPS, GRID_SIZE,
+    TRAIL_DEFAULT_LENGTH
+)
 
-# Global object ID counter
-object_id_counter = 0
-
-WIDTH, HEIGHT = 1000, 600  # Increased width by 200 for left sidebar
-TOOLBAR_WIDTH = 200
-LEFT_SIDEBAR_WIDTH = 200
-BACKGROUND_COLOR = (30, 30, 30)
-VECTOR_FIELD_COLOR = (100, 200, 100)
-FPS = 60
-GRID_SIZE = 20
 
 # Trail settings
 show_trails = True
-trail_max_length = 100
+trail_max_length = TRAIL_DEFAULT_LENGTH
 
 # Initialize Pygame
 pygame.init()
 
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption("Vector Field Simulation")
 clock = pygame.time.Clock()
+
+manager = pygame_gui.UIManager((WINDOW_WIDTH, WINDOW_HEIGHT))
+ui_manager = UIManager(manager)
+ui_manager.debug_print_panels()  # Print panel structure for debugging
 
 font = pygame.font.SysFont(None, 20)
 # Font for top-center header
@@ -33,125 +33,33 @@ header_font = pygame.font.SysFont(None, 28)
 # Track current field display mode
 field_display_mode = "vector"  # Default mode: 'vector' or 'heatmap'
 
-
-manager = pygame_gui.UIManager((WIDTH, HEIGHT))
-
 confirm_dialog = None
-
-ui_page = "home"  # Track the current UI page
-# UI Elements
-# Left sidebar: object list
-object_list = pygame_gui.elements.UISelectionList(
-    relative_rect=pygame.Rect((0, 0), (LEFT_SIDEBAR_WIDTH, HEIGHT)),
-    item_list=[],
-    manager=manager
-)
-
-# Right sidebar: controls
-# Dynamic menu label above the object inputs (move this to the top of right sidebar elements)
-menu_label = pygame_gui.elements.UILabel(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 50), (TOOLBAR_WIDTH - 40, 30)),
-    text='➕ Add New Object',
-    manager=manager
-)
-
-add_object_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 20), (TOOLBAR_WIDTH - 40, 40)),
-    text='Add Object',
-    manager=manager
-)
-
-name_label = pygame_gui.elements.UILabel(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 120), (TOOLBAR_WIDTH - 40, 30)),
-    text="Name:",
-    manager=manager
-)
-name_input = pygame_gui.elements.UITextEntryLine(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 150), (TOOLBAR_WIDTH - 40, 30)),
-    manager=manager
-)
-
-mass_label = pygame_gui.elements.UILabel(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 190), (TOOLBAR_WIDTH - 40, 30)),
-    text="Mass:",
-    manager=manager
-)
-mass_input = pygame_gui.elements.UITextEntryLine(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 220), (TOOLBAR_WIDTH - 40, 30)),
-    manager=manager
-)
-
-radius_label = pygame_gui.elements.UILabel(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 260), (TOOLBAR_WIDTH - 40, 30)),
-    text="Radius:",
-    manager=manager
-)
-radius_input = pygame_gui.elements.UITextEntryLine(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 290), (TOOLBAR_WIDTH - 40, 30)),
-    manager=manager
-)
 
 ui_mode = 'add'  # 'add' or 'edit'
 
-field_toggle_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 340), (TOOLBAR_WIDTH - 40, 40)),
-    text='Switch to Heatmap',
-    manager=manager
-)
-
-pause_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH // 2 - 120, HEIGHT - 50), (100, 40)),
-    text='Pause',
-    manager=manager
-)
-reset_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH // 2 + 20, HEIGHT - 50), (100, 40)),
-    text='Reset',
-    manager=manager
-)
-
-trail_toggle_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 520), (TOOLBAR_WIDTH - 40, 40)),
-    text='Hide Trails',
-    manager=manager
-)
-
-trail_length_slider = pygame_gui.elements.UIHorizontalSlider(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 580), (TOOLBAR_WIDTH - 40, 30)),
-    start_value=trail_max_length,
-    value_range=(10, 300),
-    manager=manager
-)
-
-# Replace exit_edit_button with return_button
-return_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 330), (TOOLBAR_WIDTH - 40, 30)),
-    text='← Return',
-    manager=manager,
-    visible=False
-)
-
-delete_object_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 370), (TOOLBAR_WIDTH - 40, 30)),
-    text='🗑️ Delete',
-    manager=manager,
-    visible=False
-)
-
-# Add settings_button for home page
-settings_button = pygame_gui.elements.UIButton(
-    relative_rect=pygame.Rect((WIDTH - TOOLBAR_WIDTH + 20, 370), (TOOLBAR_WIDTH - 40, 30)),
-    text='⚙️ Settings',
-    manager=manager,
-    visible=True
-)
-
-# Group UI elements for page switching
-home_page_elements = [menu_label, add_object_button, name_label, name_input, mass_label, mass_input, radius_label, radius_input, settings_button]
-edit_page_elements = [menu_label, name_label, name_input, mass_label, mass_input, radius_label, radius_input, delete_object_button, return_button]
-settings_page_elements = [menu_label, field_toggle_button, trail_toggle_button, trail_length_slider, return_button]
+object_list = ui_manager.get("object_list")
+menu_label = ui_manager.get("menu_label")
+name_label = ui_manager.get("name_label")
+name_input = ui_manager.get("name_input")
+mass_label = ui_manager.get("mass_label")
+mass_input = ui_manager.get("mass_input")
+radius_label = ui_manager.get("radius_label")
+radius_input = ui_manager.get("radius_input")
+field_toggle_button = ui_manager.get("field_toggle_button")
+pause_button = ui_manager.get("pause_button")
+reset_button = ui_manager.get("reset_button")
+trail_toggle_button = ui_manager.get("trail_toggle_button")
+trail_length_slider = ui_manager.get("trail_length_slider")
+return_button = ui_manager.get("return_button")
+add_object_button = ui_manager.get("add_object_button")
+delete_object_button = ui_manager.get("delete_object_button")
+settings_button = ui_manager.get("settings_button")
 
 objects = []
+
+# Global object ID counter
+object_id_counter = 0
+
 # Helper function to generate a unique name
 def get_unique_name(base_id):
     base_name = str(base_id)
@@ -171,10 +79,10 @@ radius_input.set_text("10")
 def draw_sidebar_background():
     """Draw the sidebar background."""
     # Left sidebar
-    left_sidebar_rect = pygame.Rect(0, 0, LEFT_SIDEBAR_WIDTH, HEIGHT)
+    left_sidebar_rect = pygame.Rect(0, 0, LEFT_SIDEBAR_WIDTH, WINDOW_HEIGHT)
     pygame.draw.rect(screen, (40, 40, 50), left_sidebar_rect)
     # Right sidebar
-    sidebar_rect = pygame.Rect(WIDTH - TOOLBAR_WIDTH, 0, TOOLBAR_WIDTH, HEIGHT)
+    sidebar_rect = pygame.Rect(WINDOW_WIDTH - TOOLBAR_WIDTH, 0, TOOLBAR_WIDTH, WINDOW_HEIGHT)
     pygame.draw.rect(screen, (50, 50, 50), sidebar_rect)  # Dark gray background
 
 # Objects List
@@ -277,7 +185,7 @@ def draw_objects():
 def select_object(obj):
     global selected_object
     selected_object = obj
-    show_page("edit")
+    ui_manager.switch_page("right", "edit")
     # Update sidebar inputs with the selected object's properties
     name_input.set_text(str(selected_object.get("name", "")))
     mass_input.set_text(str(selected_object["mass"]))
@@ -311,9 +219,9 @@ def handle_mouse_click(mouse_pos):
     global selected_object, dragging_object, ui_mode
     # Only allow clicking in the simulation area (not left or right sidebar)
     sim_left = LEFT_SIDEBAR_WIDTH
-    sim_right = WIDTH - TOOLBAR_WIDTH
+    sim_right = WINDOW_WIDTH - TOOLBAR_WIDTH
     x, y = mouse_pos
-    if not (sim_left <= x < sim_right and 0 <= y < HEIGHT):
+    if not (sim_left <= x < sim_right and 0 <= y < WINDOW_HEIGHT):
         return
     for obj in objects:
         dist = ((mouse_pos[0] - obj["x"])**2 + (mouse_pos[1] - obj["y"])**2)**0.5
@@ -329,31 +237,7 @@ def handle_mouse_click(mouse_pos):
     radius_input.set_text("10")
     menu_label.set_text("➕ Add New Object")
     refresh_object_list()
-    # Hide edit page, show home page
-    show_page("home")
-# Helper function for UI page switching
-def show_page(page):
-    global ui_page
-    ui_page = page
-    # Hide all elements first
-    for elem in home_page_elements + edit_page_elements + settings_page_elements:
-        elem.hide()
-    if page == "home":
-        for elem in home_page_elements:
-            elem.show()
-        return_button.hide()
-        delete_object_button.hide()
-    elif page == "edit":
-        for elem in edit_page_elements:
-            elem.show()
-        settings_button.hide()
-        add_object_button.hide()
-    elif page == "settings":
-        for elem in settings_page_elements:
-            elem.show()
-        add_object_button.hide()
-        delete_object_button.hide()
-        settings_button.hide()
+    ui_manager.switch_page("right", "main")  # Switch to home page
 
 def handle_mouse_release():
     """Stop dragging an object."""
@@ -366,9 +250,9 @@ def handle_mouse_drag(mouse_pos):
     if dragging_object:
         # Restrict to simulation area
         min_x = LEFT_SIDEBAR_WIDTH + dragging_object["radius"]
-        max_x = WIDTH - TOOLBAR_WIDTH - dragging_object["radius"]
+        max_x = WINDOW_WIDTH - TOOLBAR_WIDTH - dragging_object["radius"]
         min_y = dragging_object["radius"]
-        max_y = HEIGHT - dragging_object["radius"]
+        max_y = WINDOW_HEIGHT - dragging_object["radius"]
         dragging_object["x"] = max(min_x, min(max_x, mouse_pos[0]))
         dragging_object["y"] = max(min_y, min(max_y, mouse_pos[1]))
 
@@ -423,8 +307,8 @@ def add_object():
     if not radius_input.get_text().strip():
         radius = 10
     # Place in the center of simulation area
-    x = (LEFT_SIDEBAR_WIDTH + (WIDTH - TOOLBAR_WIDTH)) // 2
-    y = HEIGHT // 2
+    x = (LEFT_SIDEBAR_WIDTH + (WINDOW_WIDTH - TOOLBAR_WIDTH)) // 2
+    y = WINDOW_HEIGHT // 2
     shock_absorption = 0.001 * mass
     obj = {
         "id": object_id_counter,
@@ -470,8 +354,8 @@ def refresh_object_list():
 
 def generate_vector_field(grid_size, objects):
     """Generate a vector field based on objects' positions and masses."""
-    x = np.arange(0, WIDTH, grid_size)
-    y = np.arange(0, HEIGHT, grid_size)
+    x = np.arange(0, WINDOW_WIDTH, grid_size)
+    y = np.arange(0, WINDOW_HEIGHT, grid_size)
     X, Y = np.meshgrid(x, y)
 
     # Initialize field components
@@ -524,15 +408,15 @@ def update_object_positions():
         obj["y"] += obj["vy"]
 
         # Boundary collision
-        if obj["x"] - obj["radius"] < 0 or obj["x"] + obj["radius"] > WIDTH - TOOLBAR_WIDTH:
+        if obj["x"] - obj["radius"] < 0 or obj["x"] + obj["radius"] > WINDOW_WIDTH - TOOLBAR_WIDTH:
             obj["vx"] *= -1  # Reverse velocity
             obj["vx"] *= (1 - obj["shock_absorption"])  # Apply shock absorption
-            obj["x"] = max(obj["radius"], min(WIDTH - TOOLBAR_WIDTH - obj["radius"], obj["x"]))
+            obj["x"] = max(obj["radius"], min(WINDOW_WIDTH - TOOLBAR_WIDTH - obj["radius"], obj["x"]))
 
-        if obj["y"] - obj["radius"] < 0 or obj["y"] + obj["radius"] > HEIGHT:
+        if obj["y"] - obj["radius"] < 0 or obj["y"] + obj["radius"] > WINDOW_HEIGHT:
             obj["vy"] *= -1  # Reverse velocity
             obj["vy"] *= (1 - obj["shock_absorption"])  # Apply shock absorption
-            obj["y"] = max(obj["radius"], min(HEIGHT - obj["radius"], obj["y"]))
+            obj["y"] = max(obj["radius"], min(WINDOW_HEIGHT - obj["radius"], obj["y"]))
 
         # Object-object collision
         for j, other in enumerate(objects):
@@ -586,7 +470,7 @@ paused = False
 # Main loop
 running = True
 refresh_object_list()
-show_page("home")
+ui_manager.switch_page("right", "main")  # Start with the home page
 while running:
     time_delta = clock.tick(FPS) / 1000.0
     screen.fill(BACKGROUND_COLOR)
@@ -612,7 +496,7 @@ while running:
             if event.key in (pygame.K_DELETE, pygame.K_BACKSPACE):
                 if selected_object:
                     confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
-                        rect=pygame.Rect((WIDTH//2 - 150, HEIGHT//2 - 75), (300, 150)),
+                        rect=pygame.Rect((WINDOW_WIDTH//2 - 150, WINDOW_HEIGHT//2 - 75), (300, 150)),
                         manager=manager,
                         window_title='Confirm Deletion',
                         action_long_desc=f"Are you sure you want to delete '{selected_object.get('name', selected_object['id'])}'?",
@@ -634,7 +518,7 @@ while running:
                         add_object()
                 elif event.ui_element == delete_object_button and selected_object:
                     confirm_dialog = pygame_gui.windows.UIConfirmationDialog(
-                        rect=pygame.Rect((WIDTH//2 - 150, HEIGHT//2 - 75), (300, 150)),
+                        rect=pygame.Rect((WINDOW_WIDTH//2 - 150, WINDOW_HEIGHT//2 - 75), (300, 150)),
                         manager=manager,
                         window_title='Confirm Deletion',
                         action_long_desc=f"Are you sure you want to delete '{selected_object.get('name', selected_object['id'])}'?",
@@ -683,16 +567,16 @@ while running:
                     refresh_object_list()
                     add_object_button.show()
                     # Switch to home page on reset
-                    show_page("home")
+                    ui_manager.switch_page("right", "main")
                 elif event.ui_element == trail_toggle_button:
                     show_trails = not show_trails
                     trail_toggle_button.set_text('Show Trails' if not show_trails else 'Hide Trails')
                 elif event.ui_element == trail_length_slider:
                     trail_max_length = int(trail_length_slider.get_current_value())
                 elif event.ui_element == return_button:
-                    show_page("home")
+                    ui_manager.switch_page("right", "main")
                 elif event.ui_element == settings_button:
-                    show_page("settings")
+                    ui_manager.switch_page("right", "settings")
             if event.user_type == pygame_gui.UI_SELECTION_LIST_NEW_SELECTION:
                 # Handle object selection from the object list
                 selected_label = event.text
@@ -751,7 +635,7 @@ while running:
         selected_label = "None"
     header_text = header_font.render(f"Selected: {selected_label}", True, (255, 255, 255))
     # Compute center of simulation area (excluding sidebars)
-    sim_width = WIDTH - TOOLBAR_WIDTH - LEFT_SIDEBAR_WIDTH
+    sim_width = WINDOW_WIDTH - TOOLBAR_WIDTH - LEFT_SIDEBAR_WIDTH
     sim_x = LEFT_SIDEBAR_WIDTH
     header_x = sim_x + (sim_width // 2) - (header_text.get_width() // 2)
     screen.blit(header_text, (header_x, 10))
