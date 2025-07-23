@@ -94,12 +94,16 @@ def _create_element(edef, manager):
     kwargs = edef.copy()
     kwargs.pop('type', None)
 
-    if edef.get('type') == 'dropdown' and 'options_source' in edef:
-        source_func = edef['options_source']
-        if callable(source_func):
-            options = source_func()
-            if options:
-                kwargs['options'] = options
+    if etype == 'dropdown':
+        options = edef.get('options')
+        options_source_key = edef.get('options_source')
+        if options_source_key and not options:
+            # Import here to avoid circular imports
+            from data_sources import get_options
+            kwargs['options'] = get_options(options_source_key)
+
+        if not kwargs.get('options'):
+            return None  # Skip creating dropdown if no options available
 
     element = create_element_class(etype, manager, **kwargs)
 
