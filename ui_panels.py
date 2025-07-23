@@ -1,12 +1,15 @@
 # ui_panels.py
 # This file defines the UI structure (panels and their pages), not rendering.
 
+from presets import get_preset_names
+
 class RightPanel:
     def __init__(self):
         self.pages = {
             "main": [
                 {"type": "label", "text": "Menu", "name": "menu_label"},
                 {"type": "button", "text": "Add Object", "name": "add_object_button"},
+                {"type": "dropdown", "name": "preset_dropdown", "options_source": get_preset_names, "label": "Presets:"},
                 {"type": "text_input", "name": "name_input_add", "label": "Name:"},
                 {"type": "text_input", "name": "mass_input_add", "label": "Mass:"},
                 {"type": "text_input", "name": "radius_input_add", "label": "Radius:"},
@@ -17,7 +20,7 @@ class RightPanel:
             "settings": [
                 {"type": "label", "text": "Settings", "name": "settings_label"},
                 {"type": "button", "text": "Toggle Field", "name": "toggle_field_button"},
-                {"type": "slider", "start_value": 50, "min_val": 0, "max_val": 100, "name": "trail_length_slider", "label": "Trail Length:"},
+                {"type": "slider", "start_value": 3, "min_val": 1, "max_val": 20, "step": 1, "name": "trail_length_slider", "label": "Trail Age (s):"},
                 {"type": "button", "text": "Hide Trail", "name": "toggle_trail_button"},
                 {"type": "button", "text": "Show Velocity Vectors", "name": "toggle_velocity_vectors_button"},
                 {"type": "button", "text": "Return", "name": "return_button_settings"},
@@ -57,7 +60,9 @@ class BottomPanel:
             "main": [
                 {"type": "button", "text": "Pause", "name": "pause_button", "align": "center"},
                 {"type": "button", "text": "Reset", "name": "reset_button", "align": "center"},
-                {"type": "text_input", "name": "time_step_input", "label": "Time Step:", "align": "right"},
+                {"type": "text_input", "name": "speed_multiplier_input", "label": "Speed Multiplier:", "align": "right"},
+                {"type": "text_box", "text": "<p align='left'>FPS: 0 | Time: 0.0s</p>", "name": "status_label", "align": "left", "width": 400, "text_alignment": "left"},
+
             ]
         }
 

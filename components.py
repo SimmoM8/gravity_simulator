@@ -1,6 +1,6 @@
 import pygame
 import pygame_gui
-from config import TOOLBAR_WIDTH, PADDING, MARGIN, WINDOW_WIDTH, LABEL_INPUT_GAP
+from config import SIDEBAR_WIDTH, PADDING, MARGIN, WINDOW_WIDTH, LABEL_INPUT_GAP
 
 # Mapping of element type strings to their corresponding pygame_gui classes
 ELEMENT_CLASSES = {
@@ -9,6 +9,8 @@ ELEMENT_CLASSES = {
     'text_input': pygame_gui.elements.UITextEntryLine,
     'slider': pygame_gui.elements.UIHorizontalSlider,
     'selection_list': pygame_gui.elements.UISelectionList,
+    'text_box': pygame_gui.elements.UITextBox,
+    'dropdown': pygame_gui.elements.UIDropDownMenu,
 }
 
 # Metadata for each element type, such as default heights
@@ -18,6 +20,7 @@ ELEMENT_META = {
     'text_input': {'default_height': 30},
     'slider': {'default_height': 30},
     'selection_list': {'default_height': 150},
+    'dropdown': {'default_height': 30},
 }
 
 def create_element_class(element_type, manager, width=None, height=None, **kwargs):
@@ -28,7 +31,7 @@ def create_element_class(element_type, manager, width=None, height=None, **kwarg
 
     # Set default width if not provided
     if width is None:
-        width = TOOLBAR_WIDTH - 2 * MARGIN
+        width = SIDEBAR_WIDTH - 2 * MARGIN
     # Set default height based on element type metadata
     if height is None:
         height = ELEMENT_META.get(element_type, {}).get('default_height', 30)
@@ -49,6 +52,17 @@ def create_element_class(element_type, manager, width=None, height=None, **kwarg
         element_kwargs['value_range'] = (kwargs.get('min_val', 0), kwargs.get('max_val', 100))
     if element_type == 'selection_list':
         element_kwargs['item_list'] = kwargs.get('item_list', [])
+    if element_type == 'text_box':
+        # Use html_text instead of text
+        element_kwargs['html_text'] = kwargs.get('text', '')  # fallback to 'text' key if html_text missing
+    if element_type == 'dropdown':
+        options = kwargs.get('options', [])
+        if not options:
+            return None  # Skip creating if no options provided
+        default_option = options[0]
+        element_kwargs['options_list'] = options
+        element_kwargs['starting_option'] = default_option
+
 
     # Instantiate the UI element
     element = cls(**element_kwargs)
@@ -79,13 +93,22 @@ def _create_element(edef, manager):
     etype = edef.get('type')
     kwargs = edef.copy()
     kwargs.pop('type', None)
+
+    if edef.get('type') == 'dropdown' and 'options_source' in edef:
+        source_func = edef['options_source']
+        if callable(source_func):
+            options = source_func()
+            if options:
+                kwargs['options'] = options
+
     element = create_element_class(etype, manager, **kwargs)
+
     if 'label' in edef:
         label_text = edef['label']
         label_kwargs = {
             'type': 'label',
             'text': label_text,
-            'name': edef['name'] + "_label",
+            'name': edef['name'] + "_label"
         }
         label_element = create_element_class('label', manager, **label_kwargs)
         apply_common_properties(label_element, label_kwargs)

@@ -1,5 +1,8 @@
 from panel_builder import build_panel
+import pygame
+import pygame_gui
 from ui_panels import PANEL_CLASSES
+from config import SIDEBAR_WIDTH
 
 class UIManager:
     def __init__(self, manager):
@@ -34,6 +37,37 @@ class UIManager:
         for panel_name in self.panels.keys():
             self.switch_page(panel_name, "main")
 
+        # Create floating zoom buttons anchored to the bottom right of the window
+        self.zoom_in_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((-60 - SIDEBAR_WIDTH, -185), (40, 30)),
+            text='+',
+            manager=manager,
+            object_id="zoom_in_button",
+            anchors={
+                'left': 'right',
+                'right': 'right',
+                'top': 'bottom',
+                'bottom': 'bottom'
+            }
+        )
+
+        self.zoom_out_button = pygame_gui.elements.UIButton(
+            relative_rect=pygame.Rect((-60 -SIDEBAR_WIDTH, -150), (40, 30)),
+            text='–',
+            manager=manager,
+            object_id="zoom_out_button",
+            anchors={
+                'left': 'right',
+                'right': 'right',
+                'top': 'bottom',
+                'bottom': 'bottom'
+            }
+        )
+
+        # Register buttons for easy access via ui.get(...)
+        self.elements_by_name["zoom_in_button"] = self.zoom_in_button
+        self.elements_by_name["zoom_out_button"] = self.zoom_out_button
+
     def switch_page(self, panel_name, page_name):
         # Get the currently active page for this panel
         current = self.current_pages.get(panel_name)
@@ -67,4 +101,3 @@ class UIManager:
 
     def get(self, name):
         return self.elements_by_name.get(name)
- 
