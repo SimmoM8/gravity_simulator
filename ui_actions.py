@@ -74,7 +74,9 @@ def handle_button_press(element, ui, sim):
     elif element == ui.reset_button:
         sim.scene.objects.clear()
         sim.selected_object = None
+        sim.scene.object_id_counter = 0
         sim.elapsed_time = 0
+        sim.scene.camera.reset()
         ui.ui_manager.switch_page("right", "main")
         set_input_defaults(ui, DEFAULT_INPUTS)
         refresh_object_list(ui, sim)

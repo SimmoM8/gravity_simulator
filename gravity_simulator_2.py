@@ -38,6 +38,7 @@ class UIState:
         self.zoom_in_button = ui_manager.get("zoom_in_button")
         self.zoom_out_button = ui_manager.get("zoom_out_button")
         self.speed_multiplier_input = ui_manager.get("speed_multiplier_input")
+        self.preset_dropdown = ui_manager.get("preset_dropdown")
 
 
 class SimulationState:

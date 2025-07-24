@@ -1,6 +1,7 @@
 import pygame
 import pygame_gui
 from ui_actions import *
+from presets import get_preset_names, get_preset_by_name
 
 def handle_event(event, ui, sim):
     manager = ui.manager
@@ -64,5 +65,21 @@ def handle_event(event, ui, sim):
 
         elif event.user_type == pygame_gui.UI_HORIZONTAL_SLIDER_MOVED:
             handle_slider_change(event.ui_element, ui, sim)
+
+        elif event.user_type == pygame_gui.UI_DROP_DOWN_MENU_CHANGED:
+            element = event.ui_element
+            if element == ui.preset_dropdown:  # Adjust to your dropdown element name
+                print(f"element: {element}")
+                print(f"Dropdown changed: {element.selected_option}")
+                selected_name = element.selected_option
+                print(f"Selected preset: {selected_name}")
+                # Get the preset data for the selected option
+                preset_data = get_preset_by_name(selected_name[0])  # You need this helper
+                if preset_data:
+                    ui.name_input_add.set_text(preset_data["name"])
+                    ui.mass_input_add.set_text(str(float(preset_data["mass"])))
+                    ui.radius_input_add.set_text(str(float(preset_data["radius"])))
+                    ui.vx_input_add.set_text(str(float(preset_data.get("vx", 0))))
+                    ui.vy_input_add.set_text(str(float(preset_data.get("vy", 0))))
 
     manager.process_events(event)

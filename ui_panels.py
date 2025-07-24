@@ -1,15 +1,12 @@
 # ui_panels.py
 # This file defines the UI structure (panels and their pages), not rendering.
-
-from presets import get_preset_names
-
 class RightPanel:
     def __init__(self):
         self.pages = {
             "main": [
                 {"type": "label", "text": "Menu", "name": "menu_label"},
                 {"type": "button", "text": "Add Object", "name": "add_object_button"},
-                {"type": "dropdown", "name": "preset_dropdown", "options_source": get_preset_names, "label": "Presets:"},
+                {"type": "dropdown", "name": "preset_dropdown", "options_source": "preset_objects", "label": "Presets:"},
                 {"type": "text_input", "name": "name_input_add", "label": "Name:"},
                 {"type": "text_input", "name": "mass_input_add", "label": "Mass:"},
                 {"type": "text_input", "name": "radius_input_add", "label": "Radius:"},

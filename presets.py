@@ -22,3 +22,6 @@ PRESET_OBJECTS = {
 
 def get_preset_names():
     return list(PRESET_OBJECTS.keys())
+
+def get_preset_by_name(name):
+    return PRESET_OBJECTS.get(name, None)

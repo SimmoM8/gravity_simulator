@@ -47,6 +47,7 @@ def build_panel(manager, panel_name):
     from components import auto_layout_elements
     from ui_page import UIPage
     from pygame_gui.elements import UIPanel
+    import pygame
 
     # Instantiate the appropriate panel class
     panel_class = PANEL_CLASSES[panel_name]
@@ -66,9 +67,10 @@ def build_panel(manager, panel_name):
     for page_name, element_defs in panel_instance.pages.items():
         # Create UI components for each page
         elements = auto_layout_elements(manager, element_defs, relative_rect, layout)
+        container = panel.get_container()
         # Add each UI component to the single UIPanel
         for element in elements:
-            panel.add(element)
+            container.add_element(element)
         # Store UIPage with just elements for this page
         pages_dict[page_name] = UIPage(elements)
 

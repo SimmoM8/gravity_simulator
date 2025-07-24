@@ -6,8 +6,8 @@ DATA_SOURCES = {
 }
 
 def get_options(source_key):
-    """Return options list from the registered data source callable by key."""
-    source_func = DATA_SOURCES.get(source_key)
-    if callable(source_func):
-        return source_func()
+    func = DATA_SOURCES.get(source_key)
+    if callable(func):
+        result = func()
+        return result
     return []

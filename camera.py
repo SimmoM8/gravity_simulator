@@ -50,3 +50,10 @@ class Camera:
         """
         self.x_offset += dx_pixels
         self.y_offset += dy_pixels
+
+    def reset(self):
+        """Reset camera to default position and zoom."""
+        self.x_offset = 0
+        self.y_offset = 0
+        self.zoom = 1
+        self.base_pixels_per_meter = 0.00001

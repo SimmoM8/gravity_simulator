@@ -1,6 +1,7 @@
 import pygame
 import pygame_gui
 from config import SIDEBAR_WIDTH, PADDING, MARGIN, WINDOW_WIDTH, LABEL_INPUT_GAP
+from data_sources import get_options
 
 # Mapping of element type strings to their corresponding pygame_gui classes
 ELEMENT_CLASSES = {
@@ -58,7 +59,7 @@ def create_element_class(element_type, manager, width=None, height=None, **kwarg
     if element_type == 'dropdown':
         options = kwargs.get('options', [])
         if not options:
-            return None  # Skip creating if no options provided
+            return
         default_option = options[0]
         element_kwargs['options_list'] = options
         element_kwargs['starting_option'] = default_option
@@ -95,15 +96,12 @@ def _create_element(edef, manager):
     kwargs.pop('type', None)
 
     if etype == 'dropdown':
-        options = edef.get('options')
+        options = edef.get('options', [])
         options_source_key = edef.get('options_source')
         if options_source_key and not options:
-            # Import here to avoid circular imports
-            from data_sources import get_options
             kwargs['options'] = get_options(options_source_key)
-
-        if not kwargs.get('options'):
-            return None  # Skip creating dropdown if no options available
+            options = kwargs['options']
+            print(f"Dropdown options loaded from source '{options_source_key}': {options}")
 
     element = create_element_class(etype, manager, **kwargs)
 
