@@ -103,6 +103,10 @@ No installation or additional setup is needed.
 
 ---
 
+**⬇️ [Download the latest packaged ZIP file from GitHub Releases »](https://github.com/SimmoM8/gravity_simulator/releases)**
+
+---
+
 ## 🧠 Physics Model
 
 - Gravitational force between objects
