@@ -1,8 +1,8 @@
 import pygame
-from vector_field import VectorField
-from camera import Camera
+from core.vector_field import VectorField
+from core.camera import Camera
 import numpy as np
-from config import SIDEBAR_WIDTH, WINDOW_WIDTH, SIDEBAR_WIDTH, WINDOW_HEIGHT, GRID_SIZE, COEFFICIENT_OF_RESTITUTION, VECTOR_FIELD_COLOR, G, VELOCITY_VECTOR_COLOR
+from setup.config import SIDEBAR_WIDTH, WINDOW_WIDTH, SIDEBAR_WIDTH, WINDOW_HEIGHT, GRID_SIZE, COEFFICIENT_OF_RESTITUTION, VECTOR_FIELD_COLOR, G, VELOCITY_VECTOR_COLOR
 
 class Scene:
     def __init__(self):

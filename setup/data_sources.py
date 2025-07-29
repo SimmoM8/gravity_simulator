@@ -1,4 +1,4 @@
-from presets import get_preset_names
+from setup.presets import get_preset_names
 
 DATA_SOURCES = {
     "preset_objects": get_preset_names,

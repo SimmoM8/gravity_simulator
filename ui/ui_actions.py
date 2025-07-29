@@ -1,6 +1,6 @@
 import pygame
 import pygame_gui
-from config import *
+from setup.config import *
 
 def format_value(val):
     if val != 0 and (abs(val) >= 1e4 or abs(val) < 1e-3):

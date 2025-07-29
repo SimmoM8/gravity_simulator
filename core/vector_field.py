@@ -1,5 +1,5 @@
 import numpy as np
-from config import G, SIDEBAR_WIDTH, WINDOW_WIDTH, SIDEBAR_WIDTH, WINDOW_HEIGHT, GRID_SIZE
+from setup.config import G, SIDEBAR_WIDTH, WINDOW_WIDTH, SIDEBAR_WIDTH, WINDOW_HEIGHT, GRID_SIZE
 
 class VectorField:
     def __init__(self, grid_spacing_px, scene, camera):

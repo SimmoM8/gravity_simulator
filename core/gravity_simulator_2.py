@@ -1,10 +1,10 @@
 import pygame
 import pygame_gui
-from config import *
-from scene import Scene
-from ui_events import handle_event
-from ui_actions import set_input_defaults
-from ui_manager import UIManager
+from setup.config import *
+from core.scene import Scene
+from ui.ui_events import handle_event
+from ui.ui_actions import set_input_defaults
+from ui.ui_manager import UIManager
 
 
 class UIState:

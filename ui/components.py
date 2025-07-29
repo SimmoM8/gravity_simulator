@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
-from config import SIDEBAR_WIDTH, PADDING, MARGIN, WINDOW_WIDTH, LABEL_INPUT_GAP
-from data_sources import get_options
+from setup.config import SIDEBAR_WIDTH, PADDING, MARGIN, WINDOW_WIDTH, LABEL_INPUT_GAP
+from setup.data_sources import get_options
 
 # Mapping of element type strings to their corresponding pygame_gui classes
 ELEMENT_CLASSES = {

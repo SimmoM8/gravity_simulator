@@ -1,4 +1,4 @@
-from config import PANEL_CONFIG, WINDOW_WIDTH, WINDOW_HEIGHT
+from setup.config import PANEL_CONFIG, WINDOW_WIDTH, WINDOW_HEIGHT
 
 def get_panel_rect(panel_name):
     import pygame
@@ -43,9 +43,9 @@ def get_panel_rect(panel_name):
         raise ValueError(f"Unknown panel name: {panel_name}")
 
 def build_panel(manager, panel_name):
-    from ui_panels import PANEL_CLASSES
-    from components import auto_layout_elements
-    from ui_page import UIPage
+    from ui.ui_panels import PANEL_CLASSES
+    from ui.components import auto_layout_elements
+    from ui.ui_page import UIPage
     from pygame_gui.elements import UIPanel
     import pygame
 

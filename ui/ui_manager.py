@@ -1,8 +1,8 @@
-from panel_builder import build_panel
+from ui.panel_builder import build_panel
 import pygame
 import pygame_gui
-from ui_panels import PANEL_CLASSES
-from config import SIDEBAR_WIDTH
+from ui.ui_panels import PANEL_CLASSES
+from setup.config import SIDEBAR_WIDTH
 
 class UIManager:
     def __init__(self, manager):

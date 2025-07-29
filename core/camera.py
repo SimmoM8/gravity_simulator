@@ -1,4 +1,4 @@
-from config import (WINDOW_WIDTH, WINDOW_HEIGHT)
+from setup.config import (WINDOW_WIDTH, WINDOW_HEIGHT)
 
 class Camera:
     def __init__(self, x_offset=0, y_offset=0, zoom=1, base_pixels_per_meter=0.00001):

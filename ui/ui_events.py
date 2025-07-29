@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
-from ui_actions import *
-from presets import get_preset_names, get_preset_by_name
+from ui.ui_actions import *
+from setup.presets import get_preset_names, get_preset_by_name
 
 def handle_event(event, ui, sim):
     manager = ui.manager

@@ -1,6 +1,6 @@
 import pygame
-from gravity_simulator_2 import App
-from config import WINDOW_WIDTH, WINDOW_HEIGHT
+from core.gravity_simulator_2 import App
+from setup.config import WINDOW_WIDTH, WINDOW_HEIGHT
 
 # Pygame setup
 pygame.init()
