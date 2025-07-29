@@ -15,3 +15,8 @@ run_simulator.command
 
 # Ignore dev-only script
 dev_runner.py
+
+# Ignore PyInstaller build outputs
+build/
+dist/
+*.spec
