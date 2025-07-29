@@ -1,6 +1,6 @@
 # Ignore system & editor files
 .DS_Store
-.vscode/settings.json
+.vscode/
 
 # Ignore Python junk
 __pycache__/
@@ -12,3 +12,6 @@ venv/
 
 # Ignore macOS double-clickable launcher
 run_simulator.command
+
+# Ignore dev-only script
+dev_runner.py
